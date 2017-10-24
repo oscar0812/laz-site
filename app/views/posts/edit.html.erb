@@ -1,0 +1,12 @@
+<div class="container">
+
+<%if (params["u"] == "lvz")%>
+<h1>Editing Post</h1>
+
+<%= render 'form', post: @post %>
+<%= link_to 'Show', "/posts/#{@post.id}?u="+params["u"] %> |
+<%= link_to 'Back', "/posts?u="+params["u"] %>
+<%else%>
+<%= link_to 'Back', posts_path %>
+<%end%>
+</div>

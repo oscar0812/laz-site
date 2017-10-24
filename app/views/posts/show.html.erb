@@ -1,0 +1,28 @@
+<div class="container">
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @post.title %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @post.content %>
+</p>
+
+<p>
+  <strong>Routes:</strong>
+  <%= @post.routes %>
+</p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @post.item %>
+</p>
+<%if(params["u"] == "lvz")%>
+<%= link_to 'Edit', edit_post_path(@post, :u => params["u"]) %> |
+<%= link_to 'Back', "/posts?u="+params["u"] %>
+<%end%>
+</div>
