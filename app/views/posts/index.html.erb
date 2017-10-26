@@ -1,4 +1,3 @@
-<div class="container">
 <p id="notice"><%= notice %></p>
 
 <%if (params["u"] == "lvz")%>
@@ -9,6 +8,7 @@
 <table class="table .table">
   <thead>
     <tr>
+      <th>Index</th>
       <th>Title</th>
       <th>Content</th>
       <th>Routes</th>
@@ -18,12 +18,13 @@
   </thead>
 
   <tbody>
-    <% @posts.each do |post| %>
+    <% @posts.each_with_index do |post, index| %>
     <tr>
-      <td><%= post.title %></td>
-      <td><%= post.content %></td>
-      <td><%= post.routes %></td>
-      <td><%= post.item %></td>
+      <td class="index"> <%= index%></td>
+      <td class="title"> <%= post.title %></td>
+      <td class="content"> <%= post.content %></td>
+      <td class="routes"> <%= post.routes %></td>
+      <td class="item"> <%= post.item %></td>
       <%if (params["u"] == "lvz")%>
 
       <td><%= link_to 'Show', "/posts/#{post.id}?u="+params["u"] %></td>
@@ -41,4 +42,3 @@
 <%if (params["u"] == "lvz")%>
 <%= link_to 'New Post', new_post_path(:u => params["u"]) %>
 <%end%>
-</div>
