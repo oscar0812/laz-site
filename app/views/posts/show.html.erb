@@ -19,7 +19,5 @@
   <strong>Item:</strong>
   <%= @post.item %>
 </p>
-<%if(params["u"] == "lvz")%>
-<%= link_to 'Edit', edit_post_path(@post, :u => params["u"]) %> |
-<%= link_to 'Back', "/posts?u="+params["u"] %>
-<%end%>
+<%= link_to 'Edit', edit_post_path(@post) %> |
+<%= link_to 'Back', "/posts"%>

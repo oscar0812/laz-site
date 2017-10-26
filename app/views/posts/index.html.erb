@@ -1,13 +1,20 @@
 <p id="notice"><%= notice %></p>
-
-<%if (params["u"] == "lvz")%>
-<h3>Welcome Lazaro</h3>
-<%end%>
 <br/>
+<%if user_signed_in?%>
+  <%if current_user.email.to_s.chomp == "admin@admin.com" then%>
+    <h1>Welcome admin!</h1>
+  <%end%>
+  <div class="alert alert-success" role="alert">
+    <strong><a href="/users/sign_out">Sign Out</a></strong>
+  </div>
+<%else%>
+<div class="alert alert-success" role="alert">
+  <strong><a href="/users/sign_in">Sign In</a></strong>
+  <strong><a href="/users/sign_up">Sign Up</a></strong>
+</div>
 
-<p>
-  \n = newline
-</p>
+<%end%>
+<p>\n = newline</p>
 <table class="table .table">
   <thead>
     <tr>
@@ -23,25 +30,29 @@
   <tbody>
     <% @posts.each_with_index do |post, index| %>
     <tr>
-      <td class="index"> <%= index%></td>
-      <td class="title"> <%= post.title %></td>
-      <td class="content"> <%= post.content %></td>
-      <td class="routes"> <%= post.routes %></td>
-      <td class="item"> <%= post.item %></td>
-      <%if (params["u"] == "lvz")%>
-
-      <td><%= link_to 'Show', "/posts/#{post.id}?u="+params["u"] %></td>
-      <td><%= link_to 'Edit', edit_post_path(post, :u => params["u"]) %></td>
+      <td class="index">
+        <%= index%></td>
+      <td class="title">
+        <%= post.title %></td>
+      <td class="content">
+        <%= post.content %></td>
+      <td class="routes">
+        <%= post.routes %></td>
+      <td class="item">
+        <%= post.item %></td>
+      <%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
+      <td><%= link_to 'Show', "/posts/#{post.id}" %></td>
+      <td><%= link_to 'Edit', edit_post_path(post) %></td>
       <td><%= link_to 'Delete', post, method: :delete, data:
-      { confirm: 'Are you sure?' } %></td>
-
+        { confirm: 'Are you sure?' } %></td>
       <%end%>
+
     </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
-<%if (params["u"] == "lvz")%>
-<%= link_to 'New Post', new_post_path(:u => params["u"]) %>
+<%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
+<%= link_to 'New Post', new_post_path() %>
 <%end%>

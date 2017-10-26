@@ -1,9 +1,6 @@
-<%if (params["u"] == "lvz")%>
+<%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
 <h1>New Post</h1>
 
 <%= render 'form', post: @post %>
-
-<%= link_to 'Back', "/posts?u="+params["u"] %>
-<%else%>
 <%= link_to 'Back', posts_path %>
 <%end%>
