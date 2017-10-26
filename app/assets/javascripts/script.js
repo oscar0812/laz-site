@@ -2,6 +2,7 @@ $(document).ready(function() {
   var tab = $("table").eq(0);
 
   $("tbody>tr").on("click", function() {
+    console.log(1);
     clearTableColor();
     $(this).css("background-color", "lightblue");
     var rows = tab.children("tbody").children("tr");
