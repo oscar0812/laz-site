@@ -32,7 +32,7 @@ $(document).ready(function() {
     var str = $(this).children(".routes").eq(0).text();
     var arr = (str.match(/(\d+)/g));
 
-    if (arr != null && arr!="") {
+    if (arr != null && arr != "") {
       for (var x = 0; x < arr.length; x++) {
         var i = parseInt(arr[x], 10);
         var c = $(rows).eq(i);
@@ -41,18 +41,25 @@ $(document).ready(function() {
       }
     }
     // set the parent colors
-    str = $(this).data("parent");
-    arr = (str.match(/(\d+)/g));
+    colorParents($(this));
+  });
 
-    if (arr != null && arr!="") {
+  function colorParents(row){
+    var rows = tab.children("tbody").children("tr");
+    var str = $(row).data("parent");
+    var arr = (str.match(/(\d+)/g));
+
+    if (arr != null && arr != "") {
       for (var x = 0; x < arr.length; x++) {
         var i = parseInt(arr[x], 10);
         var c = $(rows).eq(i);
 
         c.css("background-color", "#afffa3");
+        colorParents(c);
       }
     }
-  });
+
+  }
 
   $("body").on("click", function(event) {
     var isChild = isChildOfElement(event, "tbody>tr");
@@ -78,21 +85,21 @@ $(document).ready(function() {
   }
 
   // ====== parenting =======
-  setParents = function(){
+  setParents = function() {
     var rows = tab.children("tbody").children("tr");
-    rows.each(function(i, r){
+    rows.each(function(i, r) {
 
       var str = $(r).children(".routes").eq(0).text();
       var arr = (str.match(/(\d+)/g));
 
-      if (arr != null && arr!="") {
+      if (arr != null && arr != "") {
 
         for (var x = 0; x < arr.length; x++) {
           var i = parseInt(arr[x], 10);
           var c = $(rows).eq(i);
           var parents = c.data("parent");
           var addThis = $(r).children(".index").eq(0).text();
-          parents = parents+" "+addThis+" ";
+          parents = parents + " " + addThis + " ";
           c.data("parent", parents);
         }
       }
