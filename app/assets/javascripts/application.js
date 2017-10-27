@@ -14,25 +14,29 @@
 //= require turbolinks
 //= require jquery
 //= require jquery_ujs
+//= require jquery-ui/widgets/sortable
+// require rails_sortable
 //= require bootstrap-sprockets
+//= require html.sortable
 //= require_tree .
 
 $(document).ready(function() {
   var tab = $("table").eq(0);
 
   $("tbody>tr").on("click", function() {
-    console.log(1);
     clearTableColor();
     $(this).css("background-color", "lightblue");
     var rows = tab.children("tbody").children("tr");
     var str = $(this).children(".routes").eq(0).text();
     var arr = (str.match(/(\d+)/g));
 
-    for (var x = 0; x < arr.length; x++) {
-      var i = parseInt(arr[x], 10);
-      var c = $(rows).eq(i);
+    if (arr != null && arr!="") {
+      for (var x = 0; x < arr.length; x++) {
+        var i = parseInt(arr[x], 10);
+        var c = $(rows).eq(i);
 
-      c.css("background-color", "pink");
+        c.css("background-color", "pink");
+      }
     }
   });
 

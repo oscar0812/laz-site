@@ -1,16 +1,22 @@
 <p id="notice"><%= notice %></p>
 <br/>
 <%if user_signed_in?%>
-  <%if current_user.email.to_s.chomp == "admin@admin.com" then%>
-    <h1>Welcome admin!</h1>
-  <%end%>
-  <div class="alert alert-success" role="alert">
-    <strong><a href="/users/sign_out">Sign Out</a></strong>
-  </div>
+<%if current_user.email.to_s.chomp == "admin@admin.com" then%>
+<h1>Welcome admin!</h1>
+<%end%>
+<div class="alert alert-success" role="alert">
+  <strong>
+    <a href="/users/sign_out">Sign Out</a>
+  </strong>
+</div>
 <%else%>
 <div class="alert alert-success" role="alert">
-  <strong><a href="/users/sign_in">Sign In</a></strong>
-  <strong><a href="/users/sign_up">Sign Up</a></strong>
+  <strong>
+    <a href="/users/sign_in">Sign In</a>
+  </strong>
+  <strong>
+    <a href="/users/sign_up">Sign Up</a>
+  </strong>
 </div>
 
 <%end%>
@@ -27,9 +33,9 @@
     </tr>
   </thead>
 
-  <tbody>
+  <tbody class="sortable">
     <% @posts.each_with_index do |post, index| %>
-    <tr>
+    <tr data-id="<%=post.id%>">
       <td class="index">
         <%= index%></td>
       <td class="title">
@@ -55,4 +61,62 @@
 <br>
 <%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
 <%= link_to 'New Post', new_post_path() %>
+<script>
+  // only if you're an admin can you drag
+  $(function () {
+    var ready,
+      set_positions;
+
+    set_positions = function () {
+      // loop through and give each task a data-pos attribute that holds its position in the DOM
+      $('tbody>tr').each(function (i) {
+        $(this).attr("data-pos", i + 1);
+      });
+    }
+
+    ready = function () {
+
+      // call set_positions function
+      set_positions();
+
+      $('.sortable').sortable();
+
+      // after the order changes
+      $('.sortable').sortable().bind('sortupdate', function (e, ui) {
+        msg_box = $("#notice")
+        // array to store new order
+        updated_order = []
+        // set the updated positions
+        set_positions();
+
+        // populate the updated_order array with the new task positions
+        $('tbody>tr').each(function (i) {
+          updated_order.push({
+            id: $(this).data("id"),
+            position: i + 1
+          });
+        });
+        // send the updated order via ajax
+        $.ajax({
+          type: "PUT",
+          url: '/sort',
+          data: {
+            order: updated_order
+          },
+          error: (err) => {
+            msg_box.text("Error dragging tr, check log");
+            console.log("ERROR: " + JSON.stringify(err));
+          },
+          success: function (data) {
+            var rows = $("table").children("tbody").children("tr");
+            rows.each(function(i, r){
+              $(r).children(".index").eq(0).text(i);
+            })
+          }
+        });
+      });
+    }
+    ready();
+  });
+</script>
 <%end%>

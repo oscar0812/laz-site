@@ -8,6 +8,12 @@ class PostsController < ApplicationController
     @posts = Post.all
   end
 
+  def sort
+    params[:order].each do |key,value|
+      Post.find(value[:id]).update_attribute(:priority,value[:position])
+    end
+  end
+
   # GET /posts/1
   # GET /posts/1.json
   def show
@@ -55,23 +61,12 @@ class PostsController < ApplicationController
   # DELETE /posts/1
   # DELETE /posts/1.json
   def destroy
-    puts "hello"
     @post.destroy
     respond_to do |format|
       format.html { redirect_to "/posts", notice: 'Post was successfully deleted.' }
       format.json { head :no_content }
     end
   end
-
-  def sort
-    render :text => params.to_s
-    @post.all.each do |soft|
-      if position = params[:posts].index(soft.id.to_s)
-        #soft.update_attribute(:position, position + 1) unless soft.position ==  position + 1
-      #end
-    end
-    render :nothing => true, :status => 200
-  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

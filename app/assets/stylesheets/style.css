@@ -1,3 +1,27 @@
 .alt{
   background-color: #fafafa;
 }
+.sortable-placeholder {
+  border: 1px dashed #CCC;
+  background-color: #f9f9f9;
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.sortable {
+
+}
+
+.whole-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  transition: linear all 1s;
+  -webkit-transition-delay: 1s;
+  transition-delay: 1s;
+}
