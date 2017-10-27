@@ -26,6 +26,8 @@ $(document).ready(function() {
   $("tbody>tr").on("click", function() {
     clearTableColor();
     $(this).css("background-color", "lightblue");
+
+    // set the children colors
     var rows = tab.children("tbody").children("tr");
     var str = $(this).children(".routes").eq(0).text();
     var arr = (str.match(/(\d+)/g));
@@ -36,6 +38,18 @@ $(document).ready(function() {
         var c = $(rows).eq(i);
 
         c.css("background-color", "pink");
+      }
+    }
+    // set the parent colors
+    str = $(this).data("parent");
+    arr = (str.match(/(\d+)/g));
+
+    if (arr != null && arr!="") {
+      for (var x = 0; x < arr.length; x++) {
+        var i = parseInt(arr[x], 10);
+        var c = $(rows).eq(i);
+
+        c.css("background-color", "#afffa3");
       }
     }
   });
@@ -62,4 +76,28 @@ $(document).ready(function() {
       $(row).css("background-color", "");
     });
   }
+
+  // ====== parenting =======
+  setParents = function(){
+    var rows = tab.children("tbody").children("tr");
+    rows.each(function(i, r){
+
+      var str = $(r).children(".routes").eq(0).text();
+      var arr = (str.match(/(\d+)/g));
+
+      if (arr != null && arr!="") {
+
+        for (var x = 0; x < arr.length; x++) {
+          var i = parseInt(arr[x], 10);
+          var c = $(rows).eq(i);
+          var parents = c.data("parent");
+          var addThis = $(r).children(".index").eq(0).text();
+          parents = parents+" "+addThis+" ";
+          c.data("parent", parents);
+        }
+      }
+    })
+  }
+
+  setParents();
 });

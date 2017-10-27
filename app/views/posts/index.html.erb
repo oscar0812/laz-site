@@ -35,7 +35,7 @@
 
   <tbody class="sortable">
     <% @posts.each_with_index do |post, index| %>
-    <tr data-id="<%=post.id%>">
+    <tr data-id="<%=post.id%>" data-parent="">
       <td class="index">
         <%= index%></td>
       <td class="title">
