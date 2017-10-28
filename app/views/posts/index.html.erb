@@ -8,6 +8,12 @@
   <strong>
     <a href="/users/sign_out">Sign Out</a>
   </strong>
+  <%if current_user.email.to_s.chomp == "admin@admin.com" then%>
+  <div class="div-with-check">
+    <input id="check1" type="checkbox" checked>
+  </div>
+  <%end%>
+
 </div>
 <%else%>
 <div class="alert alert-success" role="alert">
@@ -64,23 +70,19 @@
 <script>
   // only if you're an admin can you drag
   $(function () {
-    var ready,
-      set_positions;
+    var set_draggable, set_positions, remove_draggable;
 
     set_positions = function () {
-      // loop through and give each task a data-pos attribute that holds its position in the DOM
       $('tbody>tr').each(function (i) {
         $(this).attr("data-pos", i + 1);
       });
     }
 
-    ready = function () {
-
-      // call set_positions function
+    set_draggable = function () {
       set_positions();
-
       $('.sortable').sortable();
 
+      $( ".sortable" ).sortable( "option", "disabled", false );
       // after the order changes
       $('.sortable').sortable().bind('sortupdate', function (e, ui) {
         msg_box = $("#notice")
@@ -109,14 +111,29 @@
           },
           success: function (data) {
             var rows = $("table").children("tbody").children("tr");
-            rows.each(function(i, r){
+            rows.each(function (i, r) {
               $(r).children(".index").eq(0).text(i);
             })
           }
         });
       });
     }
-    ready();
+
+    remove_draggable = function(){
+      $( ".sortable" ).sortable("disable");
+        return false;
+    }
+
+    $("#check1").change(function () {
+      if ($(this).prop("checked")) {
+        set_draggable();
+      }
+      else{
+        remove_draggable();
+      }
+    });
+    
+    $('#check1').prop('checked', false);
   });
 </script>
 <%end%>
