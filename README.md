@@ -5,6 +5,8 @@ To deploy to Heroku read [here](https://devcenter.heroku.com/articles/getting-st
 
 Deployed Website found [here](https://laz-game.herokuapp.com/)
 
+Android Game using this website found [here](https://github.com/LVZ71/laz-game)
+
 Features:
 
 1) Drag and drop table rows using Javascript.
