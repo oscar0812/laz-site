@@ -1,32 +1,11 @@
 <p id="notice"><%= notice %></p>
 <br/>
 <%if user_signed_in?%>
-<%if current_user.email.to_s.chomp == "admin@admin.com" then%>
-<h1>Welcome admin!</h1>
-<%end%>
-<div class="alert alert-success" role="alert">
-  <strong>
-    <a href="/users/sign_out">Sign Out</a>
-  </strong>
   <%if current_user.email.to_s.chomp == "admin@admin.com" then%>
-  <div class="div-with-check">
-    <input id="check1" type="checkbox" checked>
-  </div>
+    <h1>Welcome admin!</h1>
+    <br/>
   <%end%>
-
-</div>
-<%else%>
-<div class="alert alert-success" role="alert">
-  <strong>
-    <a href="/users/sign_in">Sign In</a>
-  </strong>
-  <strong>
-    <a href="/users/sign_up">Sign Up</a>
-  </strong>
-</div>
-
 <%end%>
-<p>\n = newline</p>
 <table class="table .table">
   <thead>
     <tr>
@@ -41,99 +20,120 @@
 
   <tbody class="sortable">
     <% @posts.each_with_index do |post, index| %>
-    <tr data-id="<%=post.id%>" data-parent="">
-      <td class="index">
-        <%= index%></td>
-      <td class="title">
-        <%= post.title %></td>
-      <td class="content">
-        <%= post.content %></td>
-      <td class="routes">
-        <%= post.routes %></td>
-      <td class="path">
-        <%= post.item %></td>
-      <%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
-      <td><%= link_to 'Show', "/posts/#{post.id}" %></td>
-      <td><%= link_to 'Edit', edit_post_path(post) %></td>
-      <td><%= link_to 'Delete', post, method: :delete, data:
-        { confirm: 'Are you sure?' } %></td>
-      <%end%>
+      <tr data-id="<%=post.id%>" data-parent="">
+        <td class="index">
+          <%= index%></td>
+        <td class="title">
+          <%= post.title %></td>
+        <td class="content">
+          <%= post.content %></td>
+        <td class="routes">
+          <%= post.routes %></td>
+        <td class="path">
+          <%= post.item %></td>
+        <%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
+          <td><%= link_to 'Show', "/posts/#{post.id}" %></td>
+          <td><%= link_to 'Edit', edit_post_path(post) %></td>
+          <td><%= link_to 'Delete', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <%end%>
 
-    </tr>
+      </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
 <%if user_signed_in? && current_user.email.to_s.chomp == "admin@admin.com" then%>
-<%= link_to 'New Post', new_post_path() %>
-<script>
-  // only if you're an admin can you drag
-  $(function () {
-    var set_draggable, set_positions, remove_draggable;
+  <script>
+    // only if you're an admin can you drag
+    $(function () {
+      var set_draggable,
+        set_positions,
+        remove_draggable;
 
-    set_positions = function () {
-      $('tbody>tr').each(function (i) {
-        $(this).attr("data-pos", i + 1);
-      });
-    }
-
-    set_draggable = function () {
-      set_positions();
-      $('.sortable').sortable();
-
-      $( ".sortable" ).sortable( "option", "disabled", false );
-      // after the order changes
-      $('.sortable').sortable().bind('sortupdate', function (e, ui) {
-        msg_box = $("#notice")
-        // array to store new order
-        updated_order = []
-        // set the updated positions
-        set_positions();
-
-        // populate the updated_order array with the new task positions
+      set_positions = function () {
         $('tbody>tr').each(function (i) {
-          updated_order.push({
-            id: $(this).data("id"),
-            position: i + 1
+          $(this).attr("data-pos", i + 1);
+        });
+      }
+
+      set_draggable = function () {
+        set_positions();
+        $('.sortable').sortable();
+
+        $(".sortable").sortable("option", "disabled", false);
+        // after the order changes
+        $('.sortable').sortable().bind('sortupdate', function (e, ui) {
+          msg_box = $("#notice")
+          // array to store new order
+          updated_order = []
+          // set the updated positions
+          set_positions();
+
+          // populate the updated_order array with the new task positions
+          $('tbody>tr').each(function (i) {
+            updated_order.push({
+              id: $(this).data("id"),
+              position: i + 1
+            });
+          });
+          // send the updated order via ajax
+          $.ajax({
+            type: "PUT",
+            url: '/sort',
+            data: {
+              order: updated_order
+            },
+            error: (err) => {
+              msg_box.text("Error dragging tr, check log");
+              console.log("ERROR: " + JSON.stringify(err));
+            },
+            success: function (data) {
+              var rows = $("table").children("tbody").children("tr");
+              rows.each(function (i, r) {
+                $(r).children(".index").eq(0).text(i);
+              })
+            }
           });
         });
-        // send the updated order via ajax
-        $.ajax({
-          type: "PUT",
-          url: '/sort',
-          data: {
-            order: updated_order
-          },
-          error: (err) => {
-            msg_box.text("Error dragging tr, check log");
-            console.log("ERROR: " + JSON.stringify(err));
-          },
-          success: function (data) {
-            var rows = $("table").children("tbody").children("tr");
-            rows.each(function (i, r) {
-              $(r).children(".index").eq(0).text(i);
-            })
-          }
-        });
-      });
-    }
+      }
 
-    remove_draggable = function(){
-      $( ".sortable" ).sortable("disable");
+      remove_draggable = function () {
+        $(".sortable").sortable("disable");
         return false;
-    }
+      }
 
-    $("#check1").change(function () {
-      if ($(this).prop("checked")) {
-        set_draggable();
-      }
-      else{
-        remove_draggable();
-      }
+      $("#check1").change(function () {
+        if ($(this).prop("checked")) {
+          set_draggable();
+        } else {
+          remove_draggable();
+        }
+      });
+
+      $('#check1').prop('checked', false);
     });
-
-    $('#check1').prop('checked', false);
-  });
-</script>
+  </script>
 <%end%>
+
+<div class="footer">
+  <%if user_signed_in?%>
+    <strong>
+      <a href="/users/sign_out">Sign Out</a>
+    </strong>
+    |
+    <%if current_user.email.to_s.chomp == "admin@admin.com" then%>
+        <%= link_to 'New Post', new_post_path() %> |
+      <div class="div-with-check">
+        Draggable <input id="check1" type="checkbox" checked="checked">
+      </div>
+    <%end%>
+  <%else%>
+    <strong>
+      <a href="/users/sign_in">Sign In</a>
+    </strong>
+    <strong>
+      <a href="/users/sign_up">Sign Up</a>
+    </strong>
+  <% end %>
+</div>

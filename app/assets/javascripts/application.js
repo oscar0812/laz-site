@@ -44,18 +44,21 @@ $(document).ready(function() {
     colorParents($(this));
   });
 
-  function colorParents(row){
+  function colorParents(row) {
     var rows = tab.children("tbody").children("tr");
     var str = $(row).data("parent");
     var arr = (str.match(/(\d+)/g));
+
 
     if (arr != null && arr != "") {
       for (var x = 0; x < arr.length; x++) {
         var i = parseInt(arr[x], 10);
         var c = $(rows).eq(i);
 
-        c.css("background-color", "#afffa3");
-        colorParents(c);
+        if (!c.css("background-color")) {
+          c.css("background-color", "#afffa3");
+          colorParents(c);
+        }
       }
     }
 
