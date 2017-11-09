@@ -116,16 +116,27 @@
   </script>
 <%end%>
 
-<div class="footer">
+<div style="position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+height: 7%;
+background-color: #E3EFDB;
+color: black;
+padding-top: 1em;
+padding-right: 20px;
+padding-left: 20px;">
   <%if user_signed_in?%>
     <strong>
       <a href="/users/sign_out">Sign Out</a>
     </strong>
     |
     <%if current_user.email.to_s.chomp == "admin@admin.com" then%>
-        <%= link_to 'New Post', new_post_path() %> |
+      <%= link_to 'New Post', new_post_path() %>
+      |
       <div class="div-with-check">
-        Draggable <input id="check1" type="checkbox" checked="checked">
+        Draggable
+        <input id="check1" type="checkbox" checked="checked">
       </div>
     <%end%>
   <%else%>
